@@ -1,7 +1,10 @@
 #! /usr/bin/env python
 
-from IPython import embed
-import numpy as np
+try:
+    from IPython import embed
+except:
+    True
+
 import sys, imp
 
 neighborhood = imp.load_source('Neighborhood', 'lib/neighborhood.py')
