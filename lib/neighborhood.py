@@ -1,6 +1,6 @@
 import numpy as np
 
-class Neighborhood():
+class Neighborhood(object):
     def __init__(self, file):
         self.file = file
         self.matrix = self.__initialize_matrix(file)
