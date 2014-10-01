@@ -3,12 +3,12 @@ import numpy as np
 class Neighborhood():
     def __init__(self, file):
         self.file = file
-        self.matrix = self.init_matrix(file)
+        self.matrix = self.__initialize_matrix(file)
 
     def as_matrix(self):
         return self.matrix
 
-    def init_matrix(self, file):
+    def __initialize_matrix(self, file):
         arr = []
 
         for line in open(file).read().splitlines():
