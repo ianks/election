@@ -1,4 +1,5 @@
 class Neighborhood(object):
+    # initialize with { party, location, owned}
     def __init__(self, initial_data):
         for key in initial_data:
             setattr(self, key, initial_data[key])
