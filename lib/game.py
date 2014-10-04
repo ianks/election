@@ -33,26 +33,34 @@ class Game(object):
     def __is_district_valid_placement(self, district):
         explored_area = []
         for vertex in self.board.get_vertices():
+
             #if vertex in an explored Area:
             if vertex in explored_area:
                 continue
+
             block = vertex.get_block()
-            if not block.owned and block.location not in district.locations:
-                # RUN search on not owned blocks
-                stack = []
-                visited = []
-                stack.append( vertex )
-                while len(stack) != 0:
-                    current_vertex = stack.pop()
+            if block.owned or (block.location in district.locations):
+                continue
+
+            # RUN search on not owned blocks
+            stack = []
+            visited = []
+            stack.append( vertex )
+
+            while len(stack) != 0:
+                current_vertex = stack.pop()
+                if current_vertex not in visited:
                     visited.append(current_vertex)
                     explored_area.append(current_vertex)
                     for v in current_vertex.get_connections():
                         v_block = v.get_block()
-                        if not v_block.owned and v not in visited:
-                            stack.append(v)
-                # check for area that we cannot split into districts
-                if len(visited) % self.district_size != 0:
-                    return False
+                        if v_block.location not in district.locations:
+                            if (not v_block.owned) and (v not in visited):
+                                stack.append(v)
+            # check for area that we cannot split into districts
+            embed()
+            if len(visited) % self.district_size != 0:
+                return False
         return True
 
     def __is_district_available(self, district):
