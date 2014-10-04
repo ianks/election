@@ -25,7 +25,7 @@ class Game(object):
             self.districts.append(district)
 
             for block in district.blocks:
-                vertex = self.board.get_vertex(block.location)
+                vertex = self.board.get_vertex(block)
                 block = vertex.get_block()
                 block.owned = True
             return True
@@ -44,7 +44,7 @@ class Game(object):
                 continue
 
             block = vertex.get_block()
-            if block.owned or (block.location in district.locations):
+            if block.owned or (block in district.locations):
                 continue
 
             # RUN search on not owned blocks
@@ -59,7 +59,7 @@ class Game(object):
                     explored_area.append(current_vertex)
                     for v in current_vertex.get_connections():
                         v_block = v.get_block()
-                        if v_block.location not in district.locations:
+                        if v_block not in district.locations:
                             if (not v_block.owned) and (v not in visited):
                                 stack.append(v)
             # check for area that we cannot split into districts
@@ -69,7 +69,7 @@ class Game(object):
 
     def __is_district_available(self, district):
         for block in district.blocks:
-            vertex = self.board.get_vertex(block.location)
+            vertex = self.board.get_vertex(block)
             game_block = vertex.get_block()
             if game_block.owned:
                 return False
@@ -78,7 +78,7 @@ class Game(object):
 
     def __is_district_contiguous(self, district):
         block = district.blocks[0]
-        game_block = self.board.get_vertex(block.location)
+        game_block = self.board.get_vertex(block)
         stack = []
         visited = []
         stack.append( game_block )
