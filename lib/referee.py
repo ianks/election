@@ -18,22 +18,19 @@ class Referee(object):
         while not self.__is_game_finished():
             self.players_next_move()
 
-        # evalutate winner
         winner = self.__determine_winner()
 
-        print winner
-        # print output!!!!
-        print "game over!"
+        return winner
 
     def players_next_move(self):
-        # get the next move
+        # Get the next move
         district = self.current_player.get_move()
 
-        # submit the move if valid
+        # Submit the move if valid
         if not self.__add_move_to_game_board(district):
             self.players_next_move()
 
-        # change the player
+        # Change the player
         self.__change_player()
 
     def __change_player(self):
@@ -41,7 +38,6 @@ class Referee(object):
             self.current_player = self.players[1]
         else:
             self.current_player = self.players[0]
-        return
 
     def __add_move_to_game_board(self, district):
         return self.game.add_district(district)
@@ -75,17 +71,11 @@ class Referee(object):
             return None
 
     def __determine_district_winner(self, district):
-        r_count = 0
-        d_count = 0
-        for block in district.blocks:
-            if block.party == "R":
-                r_count += 1
-            else:
-                d_count += 1
+        parties = [block.party for block in district.blocks]
 
-        if r_count > d_count:
+        if parties.count("R") > parties.count("D"):
             return self.__player_from_party("R")
-        elif r_count < d_count:
+        elif parties.count("R") < parties.count("D"):
             return self.__player_from_party("D")
         else:
             return None
