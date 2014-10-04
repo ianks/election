@@ -37,7 +37,7 @@ class Game(object):
 
             # Run search on not owned blocks
             block = vertex.get_block()
-            if block.owned or block in district.locations:
+            if block.owned or block in district.blocks:
                 continue
 
             stack = []
@@ -52,7 +52,7 @@ class Game(object):
                     explored_area.append(current_vertex)
 
                     for connection in current_vertex.get_connections():
-                        if connection.get_block() not in district.locations:
+                        if connection.get_block() not in district.blocks:
                             if not connection.get_block().owned and connection not in visited:
                                 stack.append(connection)
 
@@ -83,7 +83,7 @@ class Game(object):
                 visited.append(current_vertex)
 
                 for connection in current_vertex.get_connections():
-                    if connection.get_block().location in district.locations:
+                    if connection.get_block() in district.blocks:
                         if connection not in visited:
                             stack.append(connection)
 
