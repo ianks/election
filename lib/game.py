@@ -33,7 +33,7 @@ class Game(object):
         return False
 
     def evaluate_game_state(self):
-        return __is_finished()
+        return self.__is_finished()
 
     def __is_district_valid_placement(self, district):
         explored_area = []

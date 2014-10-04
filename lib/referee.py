@@ -15,8 +15,7 @@ class Referee(object):
         self.current_player = players[0]
 
     def start_game(self):
-
-        while not self.__is_game_finished:
+        while not self.__is_game_finished():
             self.players_next_move()
 
         # evalutate winner
@@ -58,17 +57,17 @@ class Referee(object):
         p0_counter = 0
         p1_counter = 0
         for district in self.game.districts:
-            if self.__determine_district_winner(district) == player[0]:
+            if self.__determine_district_winner(district) == self.players[0]:
                 p0_counter +=1
-            elif self.__determine_district_winner(district) == players[1]:
+            elif self.__determine_district_winner(district) == self.players[1]:
                 p1_counter +=1
             else:
                 continue
 
         if p0_counter > p1_counter:
-            return player[0]
+            return self.players[0]
         elif p0_counter < p1_counter:
-            return player[1]
+            return self.players[1]
         else:
             return None
 

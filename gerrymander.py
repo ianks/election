@@ -37,9 +37,8 @@ def main():
     game = lib.Game(neighborhood)
     game_players = [players.Max(game, "R"), players.Min(game, "D")]
     ref = lib.Referee(neighborhood, game, game_players)
-    embed()
 
-    print n.inspect()
+    ref.start_game()
 
 if __name__ == "__main__":
     main()
