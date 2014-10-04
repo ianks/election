@@ -21,7 +21,7 @@ class Game(object):
             return False
 
     def add_district(self, district):
-        if is_legal_move(district):
+        if self.is_legal_move(district):
             self.districts.append(district)
 
             for block in district.blocks:
