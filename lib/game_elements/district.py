@@ -6,5 +6,6 @@ class District(object):
     def __getLocations(self):
       locations = []
       for block in self.blocks:
-        location.append(block.location)
-      self.locations = locations
+        locations.append(block.location)
+      return locations
+

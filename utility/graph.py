@@ -9,7 +9,7 @@ class Vertex:
         self.connectedTo[nbr] = weight
 
     def __str__(self):
-        return str(self.id) + ' connectedTo: ' + str([x.id for x in self.connectedTo])
+        return str(self.block) + ' connectedTo: ' + str([x.block for x in self.connectedTo])
 
     def get_connections(self):
         return self.connectedTo.keys()

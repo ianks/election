@@ -1,3 +1,5 @@
+from game import Game
+
 class Referee(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
