@@ -1,7 +1,7 @@
 class Referee(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
-        self.game = Game()
+        self.game = Game(self.neighborhood)
 
     def start_game(self):
         return
