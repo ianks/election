@@ -2,9 +2,12 @@
 
 import sys, imp
 
+import utility
+
 import lib
 from lib import players
 from lib import game_elements
+
 
 try:
     from IPython import embed
@@ -29,10 +32,11 @@ def initialize_neighborhood(file):
 
     return game_elements.Neighborhood({ 'matrix': matrix })
 
-
 def main():
     n = initialize_neighborhood(sys.argv[1])
+    embed()
     print n.inspect()
+
 
 if __name__ == "__main__":
     main()
