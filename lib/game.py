@@ -7,28 +7,33 @@ class Game(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
         self.board = neighborhood.initialize_graph()
-        # self.game_state = initialize_game_state(self)
         self.district_size = len(neighborhood.matrix)
         self.districts = []
 
     def is_legal_move(self, district):
-        a = self.__is_district_available(district)
-        c = self.__is_district_contiguous(district)
-        vs = self.__is_district_valid_size(district)
-        vp = self.__is_district_valid_placement(district)
-        if a and c and vs and vp:
+        available = self.__is_district_available(district)
+        contiguous = self.__is_district_contiguous(district)
+        valid_size = self.__is_district_valid_size(district)
+        valid_placement = self.__is_district_valid_placement(district)
+        if available and contiguous and valid_size and valid_placement:
             return True
         else:
             return False
 
     def add_district(self, district):
-        self.districts.append(district)
-        for block in district:
-            game_block = self.board.get_vertex(block.location)
-            game_block.owned = True
+        if is_legal_move(district):
+            self.districts.append(district)
+
+            for block in district.blocks:
+                vertex = self.board.get_vertex(block.location)
+                block = vertex.get_block()
+                block.owned = True
+            return True
+
+        return False
 
     def evaluate_game_state(self):
-        return
+        return __is_finished()
 
     def __is_district_valid_placement(self, district):
         explored_area = []
@@ -58,7 +63,6 @@ class Game(object):
                             if (not v_block.owned) and (v not in visited):
                                 stack.append(v)
             # check for area that we cannot split into districts
-            embed()
             if len(visited) % self.district_size != 0:
                 return False
         return True
