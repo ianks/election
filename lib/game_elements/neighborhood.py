@@ -5,6 +5,7 @@ class Neighborhood(object):
     def __init__(self, initial_data):
         for key in initial_data:
             setattr(self, key, initial_data[key])
+        self.initialize_graph()
 
     # Returns the matrix itself
     def as_matrix(self):
@@ -33,39 +34,23 @@ class Neighborhood(object):
 
         return matrix
 
-    def initialize_vertices(self):
-        matrix = []
-
-        for i, row in enumerate(self.matrix):
-            _row = []
-
-            for j, col in enumerate(row):
-                blk = self.block_at_location(i,j)
-                _row.append(utility.Vertex(blk))
-
-            matrix.append(_row)
-
-        self.vertex_matrix = matrix
-        return True
 
     def initialize_graph(self):
-        self.initialize_vertices()
         graph = utility.Graph()
 
-        for i, row in enumerate(self.vertex_matrix):
+        for i, row in enumerate(self.matrix):
             prev_element = False
 
             for j, element in enumerate(row):
                 if prev_element:
-                    graph.addEdge(element, prev_element)
+                    graph.add_edge(element, prev_element)
                     prev_element = element
 
                 else:
                     prev_element = element
 
                 if i != 0:
-
-                    graph.addEdge(self.vertex_at_location(i-1, j), self.vertex_at_location(i, j))
+                    graph.add_edge(self.block_at_location(i-1, j), self.block_at_location(i, j), 1)
 
         self.graph = graph
         return self.graph

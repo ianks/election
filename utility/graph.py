@@ -1,54 +1,71 @@
-# source: http://interactivepython.org/courselib/static/pythonds/Graphs/graphintro.html
+# Modified from source: http://interactivepython.org/courselib/static/pythonds/Graphs/graphintro.html
 
 class Vertex:
     def __init__(self,key):
-        self.id = key
+        self.block = key
         self.connectedTo = {}
 
-    def addNeighbor(self,nbr,weight=0):
+    def add_neighbor(self,nbr,weight=0):
         self.connectedTo[nbr] = weight
 
     def __str__(self):
         return str(self.id) + ' connectedTo: ' + str([x.id for x in self.connectedTo])
 
-    def getConnections(self):
+    def get_connections(self):
         return self.connectedTo.keys()
 
-    def getId(self):
-        return self.id
+    def get_block(self):
+        return self.block
 
-    def getWeight(self,nbr):
+    def get_weight(self,nbr):
         return self.connectedTo[nbr]
+
+
+#
+# Graph Stores Vertices in dictionary by location index
+# Vertex must be a block for this to work
+#
 
 class Graph:
     def __init__(self):
         self.vertList = {}
         self.numVertices = 0
 
-    def addVertex(self,key):
+    def add_vertex(self, value):
         self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key)
+        newVertex = Vertex(value)
+        key = value.location
         self.vertList[key] = newVertex
         return newVertex
 
-    def getVertex(self,n):
+    def get_vertex(self,n):
         if n in self.vertList:
             return self.vertList[n]
+        else:
+            return None
+
+    def get_vertex_at_location(self,i,j):
+        if (i,j) in self.vertList:
+            return self.vertList[(i,j)]
         else:
             return None
 
     def __contains__(self,n):
         return n in self.vertList
 
-    def addEdge(self,f,t,cost=0):
-        if f not in self.vertList:
-            nv = self.addVertex(f)
-        if t not in self.vertList:
-            nv = self.addVertex(t)
-        self.vertList[f].addNeighbor(self.vertList[t], cost)
+    def add_edge(self,f,t,cost=0):
+        fLoc = f.location
+        tLoc = t.location
+        if fLoc not in self.vertList:
+            self.add_vertex(f)
+        if tLoc not in self.vertList:
+            self.add_vertex(t)
 
-    def getVertices(self):
-        return self.vertList.keys()
+        self.vertList[fLoc].add_neighbor(self.vertList[tLoc], cost)
+        self.vertList[tLoc].add_neighbor(self.vertList[fLoc], cost)
+
+    def get_vertices(self):
+        return self.vertList.values()
 
     def __iter__(self):
         return iter(self.vertList.values())

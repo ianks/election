@@ -34,7 +34,7 @@ def initialize_neighborhood(file):
 
 def main():
     n = initialize_neighborhood(sys.argv[1])
-    embed()
+
     print n.inspect()
 
 
