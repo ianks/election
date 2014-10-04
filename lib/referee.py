@@ -28,8 +28,11 @@ class Referee(object):
     def players_next_move(self):
         # get the next move
         district = self.current_player.get_move()
-        # submit the move
-        self.__add_move_to_game_board(district)
+
+        # submit the move if valid
+        if not self.__add_move_to_game_board(district):
+            self.players_next_move()
+
         # change the player
         self.__change_player()
 
