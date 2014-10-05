@@ -45,7 +45,6 @@ class Player(object):
     if self.game.is_legal_move(valid_district_3):
       print "valid3"
       return valid_district_3
-    embed()
     if self.game.is_legal_move(valid_district_4):
       print "valid4"
 
