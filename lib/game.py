@@ -32,6 +32,16 @@ class Game(object):
     def evaluate_game_state(self):
         return self.__is_finished()
 
+    def district_winner(self, district):
+        parties = [block.party for block in district.blocks]
+
+        if parties.count("R") > parties.count("D"):
+            return "R"
+        elif parties.count("R") < parties.count("D"):
+            return "D"
+        else:
+            return None
+
     def __is_district_valid_placement(self, district):
         explored_area = []
 

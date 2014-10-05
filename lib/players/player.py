@@ -3,7 +3,10 @@ try:
 except:
     pass
 
+import copy
+
 from .. import game_elements
+
 
 class Player(object):
   def __init__(self, game, party):
@@ -37,54 +40,68 @@ class Player(object):
     valid_district_4 = game_elements.district.District([b13,b14,b15,b16])
 
     if self.game.is_legal_move(valid_district_1):
-      print "valid1"
       return valid_district_1
     if self.game.is_legal_move(valid_district_2):
-      print "valid2"
       return valid_district_2
     if self.game.is_legal_move(valid_district_3):
-      print "valid3"
       return valid_district_3
     if self.game.is_legal_move(valid_district_4):
-      print "valid4"
-
       return valid_district_4
 
   # Find the optimal min/max move
   # TODO: Refactor to return the value AND the action (which district to play)
-  def __minimax(self, state, depth, is_max):
+  def __minimax(self, game_orig, depth, is_max, take_action = None):
+
+    # make a copy so we dont screw up the current game state
+    game = copy.deepcopy(game_orig)
+
+    if take_action:
+      game.add_district(take_action)
 
     # Max Depth of tree reached
-    if depth == 0 or self.__is_terminal(state):
-      return self.__utility(state)
+    if depth == 0 or self.__is_terminal(game):
+      return self.__utility(game)
 
     # Player is Max:
     if is_max:
-      best_value = float("-inf")
-      for action in self.__actions(state):
-        value = self.__minimax(state, depth-1, False)
-        best_value = max(value, best_value)
+      best_value = Move(None, float("-inf"))
+      for action in self.__actions(game):
+        value = self.__minimax(game, depth-1, False, action)
+        best_value = max([value, best_value], key = lambda move: move.value)
       return best_value
 
     # Player is Min:
     else:
-      best_value = float("inf")
-      for action in self.__actions(state):
-        value = self.__minimax(state, depth-1, True)
-        best_value = min(value, best_value)
+      best_value = Move(None, float("-inf"))
+      for action in self.__actions(game):
+        value = self.__minimax(game, depth-1, True, action)
+        best_value = min([value, best_value], key = lambda move: move.value)
       return best_value
 
-  # Returns a list of actions or moves given the game state
-  def __actions(self,state):
+  # Returns a list of actions or moves given the game game
+  def __actions(self,game):
     pass
 
-  # Returns the utility of an end state (who is winning at that point)
-  def __utility(self):
-    pass
+  # Returns the utility of an end game (who is winning at that point)
+  def __utility(self, game):
+    # needs to return a move object
+
+    # TODO: Fix so it is not hard coded
+    max_player.party = "R"
+    min_player.party = "D"
+
+    value = 0
+    for district in game.districts:
+      if game.district_winner(district) == max_player.party:
+        value += 1
+      elif game.district_winner(district) == min_player.party:
+        value -= 1
+
+    return Move(None, value)
 
   # Returns true when game is complete
-  def __is_terminal(self):
-    pass
+  def __is_terminal(self, game):
+    return not game.evaluate_game_state()
 
 
 class Max(Player):
@@ -93,5 +110,10 @@ class Max(Player):
 
 class Min(Player):
   pass
+
+class Move(object)
+  def __init(self, action, value):
+    self.action = action
+    self.value = value
 
 
