@@ -28,8 +28,8 @@ class TestGameFunctions(unittest.TestCase):
 
     def test_is_legal_move(self):
         n = self.initialize_neighborhood('smallNeighborhood.txt')
-        ref = lib.Referee(n)
-        game = ref.game
+        game = lib.Game(n)
+
         b1 = game.neighborhood.block_at_location(0,0)
         b2 = game.neighborhood.block_at_location(0,1)
         b3 = game.neighborhood.block_at_location(0,2)
@@ -65,8 +65,8 @@ class TestGameFunctions(unittest.TestCase):
 
     def test_is_illegal_move(self):
         n = self.initialize_neighborhood('smallNeighborhood.txt')
-        ref = lib.Referee(n)
-        game = ref.game
+        game = lib.Game(n)
+
         b1 = game.neighborhood.block_at_location(0,0)
         b2 = game.neighborhood.block_at_location(0,1)
         b3 = game.neighborhood.block_at_location(0,2)

@@ -34,7 +34,7 @@ class Graph:
     def add_vertex(self, value):
         self.numVertices = self.numVertices + 1
         newVertex = Vertex(value)
-        key = value.location
+        key = value
         self.vertList[key] = newVertex
         return newVertex
 
@@ -54,15 +54,13 @@ class Graph:
         return n in self.vertList
 
     def add_edge(self,f,t,cost=0):
-        fLoc = f.location
-        tLoc = t.location
-        if fLoc not in self.vertList:
+        if f not in self.vertList:
             self.add_vertex(f)
-        if tLoc not in self.vertList:
+        if t not in self.vertList:
             self.add_vertex(t)
 
-        self.vertList[fLoc].add_neighbor(self.vertList[tLoc], cost)
-        self.vertList[tLoc].add_neighbor(self.vertList[fLoc], cost)
+        self.vertList[f].add_neighbor(self.vertList[t], cost)
+        self.vertList[t].add_neighbor(self.vertList[f], cost)
 
     def get_vertices(self):
         return self.vertList.values()
