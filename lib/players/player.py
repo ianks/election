@@ -14,11 +14,14 @@ class Player(object):
     self.game = game
 
   # Find the optimal min/max move
-  def minimax(self, game_orig, depth, is_max, take_action = False):
+  def minimax(self, game_orig, depth, is_max, take_action = None):
 
+    emptyDistrict = game_elements.District([])
     # Will take action after the first call of minimax
     if take_action:
       game_orig.add_district(take_action)
+    else:
+       take_action = emptyDistrict
 
     # make a copy so we dont screw up the current game state
     game = copy.deepcopy(game_orig)
@@ -29,19 +32,25 @@ class Player(object):
 
     # Player is Max:
     if is_max:
-      best_value = Move(False, float("-inf"))
+      best_value = Move(emptyDistrict, float("-inf"))
       for action in self.__actions(game):
         value = self.minimax(game, depth-1, False, action)
         best_value = max([value, best_value], key = lambda move: move.value)
+
+      #convert new instance of action to old
+      best_value.action = self.__convert_action_to_original_game(game_orig,best_value.action)
 
       return best_value
 
     # Player is Min:
     else:
-      best_value = Move(False, float("-inf"))
+      best_value = Move(emptyDistrict, float("inf"))
       for action in self.__actions(game):
         value = self.minimax(game, depth-1, True, action)
         best_value = min([value, best_value], key = lambda move: move.value)
+      #convert new instance of action to old
+      best_value.action = self.__convert_action_to_original_game(game_orig,best_value.action)
+
       return best_value
 
   # Returns a list of actions or moves given the game game
@@ -79,6 +88,19 @@ class Player(object):
   def __is_terminal(self, game):
     return game.evaluate_game_state()
 
+  def __convert_action_to_original_game(self, original_game,action):
+    original_vertices = original_game.board.get_vertices()
+    original_blocks_list = []
+    for vertex in original_vertices:
+      original_blocks_list.append(vertex.get_block())
+    original_action = game_elements.District([])
+
+    for block in action.blocks:
+      for original_block in original_blocks_list:
+        if block.location == original_block.location:
+          original_action.append(original_block)
+
+    return original_action
 
 class Max(Player):
   def get_move(self):
@@ -98,6 +120,6 @@ class Move(object):
     self.action = action
     self.value = value
 
-def convert_copy_action_to_original_action(self,game_copy,original_game,action):
+
 
 
