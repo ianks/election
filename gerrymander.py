@@ -38,7 +38,7 @@ def main():
     game_players = [players.Max(game, "R"), players.Min(game, "D")]
     ref = lib.Referee(neighborhood, game, game_players)
 
-    print ref.start_game()
+    ref.start_game()
 
 if __name__ == "__main__":
     main()

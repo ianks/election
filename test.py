@@ -42,6 +42,11 @@ class TestGameFunctions(unittest.TestCase):
         self.valid_district_3 = game_elements.district.District([b7,b8,b6,b12])
         self.valid_district_4 = game_elements.district.District([b9,b10,b13,b14])
         self.valid_district_5 = game_elements.district.District([b10,b11,b12,b7])
+        self.valid_district_6 = game_elements.district.District([b1,b2,b3,b4])
+        self.valid_district_7 = game_elements.district.District([b5,b6,b7,b8])
+        self.valid_district_8 = game_elements.district.District([b9,b10,b11,b12])
+        self.valid_district_9 = game_elements.district.District([b13,b14,b15,b16])
+
 
         # inValid District (not connected)
         self.invalid_district_1 = game_elements.district.District([b2,b3,b4,b16])
@@ -97,6 +102,15 @@ class TestGameFunctions(unittest.TestCase):
         self.assertFalse(self.game.add_district(self.valid_district_2))
         # Cannot leave a hole (at b8)
         self.assertFalse(self.game.add_district(self.valid_district_5))
+
+    def test_game_will_finish_with_valid_moves(self):
+        # fill game board
+        self.assertTrue(self.game.add_district(self.valid_district_6))
+        self.assertTrue(self.game.add_district(self.valid_district_7))
+        self.assertTrue(self.game.add_district(self.valid_district_8))
+        self.assertTrue(self.game.add_district(self.valid_district_9))
+        # should end game
+        self.assertTrue(self.game.evaluate_game_state())
 
 if __name__ == '__main__':
     unittest.main()

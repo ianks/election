@@ -1,3 +1,8 @@
+try:
+    from IPython import embed
+except:
+    pass
+
 class Game(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
@@ -10,7 +15,6 @@ class Game(object):
         contiguous = self.__is_district_contiguous(district)
         valid_size = self.__is_district_valid_size(district)
         valid_placement = self.__is_district_valid_placement(district)
-
         return available and contiguous and valid_size and valid_placement
 
     def add_district(self, district):
@@ -27,6 +31,16 @@ class Game(object):
 
     def evaluate_game_state(self):
         return self.__is_finished()
+
+    def district_winner(self, district):
+        parties = [block.party for block in district.blocks]
+
+        if parties.count("R") > parties.count("D"):
+            return "R"
+        elif parties.count("R") < parties.count("D"):
+            return "D"
+        else:
+            return None
 
     def __is_district_valid_placement(self, district):
         explored_area = []
@@ -57,7 +71,9 @@ class Game(object):
                                 stack.append(connection)
 
             # Check for area that we cannot split into districts
-            return len(visited) % self.district_size == 0
+            if len(visited) % self.district_size != 0:
+                return False
+        return True
 
     def __is_district_available(self, district):
         for block in district.blocks:

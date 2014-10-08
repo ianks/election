@@ -18,9 +18,11 @@ class Referee(object):
         while not self.__is_game_finished():
             self.players_next_move()
 
-        winner = self.__determine_winner()
-
-        return winner
+        #print Information
+        self.__print_players()
+        self.__print_district_assigments()
+        self.__print_district_winners()
+        self.__print_election_outcome()
 
     def players_next_move(self):
         # Get the next move
@@ -79,3 +81,41 @@ class Referee(object):
             return self.__player_from_party("D")
         else:
             return None
+
+    def __print_players(self):
+        self.__print_divider()
+        for player in self.players:
+            print player.__class__.__name__, "=", player.party
+        self.__print_divider(True)
+
+    def __print_district_assigments(self):
+        self.__print_divider()
+        for i, district in enumerate(self.game.districts):
+            print "District", str(i+1) + ":", district.inspect()
+        self.__print_divider(True)
+
+    def __print_district_winners(self):
+        self.__print_divider()
+        for i, district in enumerate(self.game.districts):
+            player = self.__determine_district_winner(district)
+            if player == None:
+                party = "Tie"
+            else:
+                party = player.party
+            print "District", str(i+1) + ":", party
+        self.__print_divider(True)
+
+    def __print_election_outcome(self):
+        self.__print_divider()
+        winner = self.__determine_winner()
+        if winner == None:
+            party = "Tie"
+        else:
+            party = winner.party
+        print "Election outcome:", party, "wins"
+        self.__print_divider(True)
+
+    def __print_divider(self, spacer = False):
+        print "*" * 38
+        if spacer:
+            print ""
