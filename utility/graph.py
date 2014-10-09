@@ -38,12 +38,6 @@ class Graph:
         self.vertList[key] = newVertex
         return newVertex
 
-    # def get_vertex(self,n):
-    #     if n in self.vertList:
-    #         return self.vertList[n]
-    #     else:
-    #         return None
-
     def get_vertex(self, block):
         for blk, vert in self.vertList.iteritems():
             if block.location == blk.location:
