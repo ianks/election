@@ -41,6 +41,28 @@ class Game(object):
 
         return arr
 
+    def inspect_blocks(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            arr.append((vert.get_block().location, vert.get_block().owned))
+        return arr
+
+    def inspect_available_moves(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            block = vert.get_block()
+            if not block.owned:
+                arr.append(vert.get_block().location)
+        return arr
+
+    def inspect_taken_moves(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            block = vert.get_block()
+            if block.owned:
+                arr.append(vert.get_block().location)
+        return arr
+
     def district_winner(self, district):
         parties = [block.party for block in district.blocks]
 
@@ -88,12 +110,7 @@ class Game(object):
     def __is_district_available(self, district):
         for block in district.blocks:
             vertex = self.board.get_vertex(block)
-
-            try:
-                game_block = vertex.get_block()
-            except:
-                embed()
-
+            game_block = vertex.get_block()
             if game_block.owned:
                 return False
 
