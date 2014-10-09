@@ -160,7 +160,7 @@ class Max(Player):
       return parties.count(self.min_player_party)
 
     else:
-      return parties.count(self.max_player_party)
+      return 0
 
 
 class Min(Player):
@@ -184,7 +184,7 @@ class Min(Player):
       return parties.count(self.max_player_party)
 
     else:
-      return parties.count(self.min_player_party)
+      return 0
 
 
 class Move(object):
