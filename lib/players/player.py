@@ -16,24 +16,23 @@ class Player(object):
     self.game = game
 
   # Find the optimal min/max move
-  def minimax(self, game, depth, is_max, take_action = None):
+  def minimax(self, game_orig, depth, is_max, take_action = None):
 
     emptyDistrict = game_elements.District([])
     # Will take action after the first call of minimax
     if take_action:
       print 'District: ', take_action.inspect()
       print '*******'
-      print "before take action:", game.inspect()
+      print "before take action:", game_orig.inspect()
       print '*******'
-      game.add_district(take_action)
-      print "after take action:", game.inspect()
+      game_orig.add_district(take_action)
+      print "after take action:", game_orig.inspect()
       #print '*******'
     else:
        take_action = emptyDistrict
 
     # make a copy so we dont screw up the current game state
-
-    # embed()
+    game = copy.deepcopy(game_orig)
 
     # Max Depth of tree reached
     if depth == 0 or self.__is_terminal(game):
@@ -45,7 +44,7 @@ class Player(object):
       for action in self.__actions(game):
         value = self.minimax(game, depth-1, False, action)
         best_value = max([value, best_value], key = lambda move: move.value)
-
+      best_value.action = self.convert_action_to_original_game(game_orig, best_value.action)
       return best_value
 
     # Player is Min:
@@ -56,7 +55,7 @@ class Player(object):
       for action in actions:
         value = self.minimax(game, depth-1, True, action)
         best_value = min([value, best_value], key = lambda move: move.value)
-
+      best_value.action = self.convert_action_to_original_game(game_orig, best_value.action)
       return best_value
 
   # Returns a list of actions or moves given the game game
@@ -70,7 +69,7 @@ class Player(object):
        break
 
       count += 1
-      vertex = random.sample(game.board.get_vertices(), 1)[0]
+      vertex = random.choice(game.board.get_vertices())
 
       if vertex.get_block().owned:
         continue
@@ -90,9 +89,14 @@ class Player(object):
             if len(district.blocks) == game.district_size:
               break
 
+            random_stack = []
             for connection in current_vertex.get_connections():
               if (not connection.get_block().owned) and (connection not in visited):
-                  stack.append(connection)
+                  random_stack.append(connection)
+              if len(random_stack) > 0:
+                random.shuffle(random_stack)
+                for item in random_stack:
+                  stack.append(item)
 
 
       if game.is_legal_move(district):
@@ -138,20 +142,16 @@ class Player(object):
 
 class Max(Player):
   def get_move(self):
-    game = copy.deepcopy(self.game)
-    move = self.minimax(game, 3, True)
-    converted_move = self.convert_action_to_original_game(game, move.action)
+    move = self.minimax(self.game, 3, True)
     # return a district (action)
-    return converted_move
+    return move.action
 
 
 class Min(Player):
   def get_move(self):
-    game = copy.deepcopy(self.game)
-    move = self.minimax(game, 3, False)
-    converted_move = self.convert_action_to_original_game(game, move.action)
+    move = self.minimax(self.game, 3, False)
     # return a district (action)
-    return converted_move
+    return move.action
 
 class Move(object):
   def __init__(self, action, value):
