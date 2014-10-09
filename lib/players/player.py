@@ -74,7 +74,7 @@ class Player(object):
     count = 0
     while len(actions_list) < 5:
       if (len(actions_list) != 0 and count >= 100):
-       break
+        break
 
       count += 1
       vertex = random.choice(game.board.get_vertices())
@@ -134,7 +134,8 @@ class Player(object):
     value = 0
 
     for district in game.districts:
-      value += self._winner_weight(game, district)
+      value += self._winner_value(game, district)
+      value += self._party_ratio_value(game, district)
 
     return Move(action, value)
 
@@ -143,13 +144,23 @@ class Max(Player):
     move = self.minimax(self.game, 3, True)
     return move.action
 
-  def _winner_weight(self, game, district):
+  def _winner_value(self, game, district):
     if game.district_winner(district) == self.max_player_party:
         return 1
     elif game.district_winner(district) == self.min_player_party:
         return -1
     else:
         return 0  # Tie
+
+  def _party_ratio_value(self, game, district):
+    parties = [block.party for block in district.blocks]
+
+    # If we win, favor the move that gives us more of their blocks
+    if parties.count(self.max_player_party) > 2:
+      return parties.count(self.min_player_party)
+
+    else:
+      return parties.count(self.max_player_party)
 
 
 class Min(Player):
@@ -157,13 +168,23 @@ class Min(Player):
     move = self.minimax(self.game, 3, False)
     return move.action
 
-  def _winner_weight(self, game, district):
+  def _winner_value(self, game, district):
     if game.district_winner(district) == self.max_player_party:
         return 1
     elif game.district_winner(district) == self.min_player_party:
         return -1
     else:
         return 0  # Tie
+
+  def _party_ratio_value(self, game, district):
+    parties = [block.party for block in district.blocks]
+
+    # If we win, favor the move that gives us more of their blocks
+    if parties.count(self.min_player_party) > 2:
+      return parties.count(self.max_player_party)
+
+    else:
+      return parties.count(self.min_player_party)
 
 
 class Move(object):
