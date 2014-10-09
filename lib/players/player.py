@@ -16,6 +16,8 @@ class Player(object):
   def __init__(self, game, party):
     self.party = party
     self.game = game
+    self.max_player_party = "R"
+    self.min_player_party = "D"
 
   # Find the optimal min/max move
   def minimax(self, game_orig, depth, is_max, take_action = None):
@@ -104,28 +106,10 @@ class Player(object):
                 for item in random_stack:
                   stack.append(item)
 
-
       if game.is_legal_move(district):
         actions_list.append(district)
 
     return actions_list
-
-  # Returns the utility of an end game (who is winning at that point)
-  def __utility(self, game, action):
-    # needs to return a move object
-
-    # TODO: Fix so it is not hard coded
-    max_player_party = "R"
-    min_player_party = "D"
-
-    value = 0
-    for district in game.districts:
-      if game.district_winner(district) == max_player_party:
-        value += 1
-      elif game.district_winner(district) == min_player_party:
-        value -= 1
-
-    return Move(action, value)
 
   # Returns true when game is complete
   def __is_terminal(self, game):
@@ -145,16 +129,42 @@ class Player(object):
 
     return original_action
 
+  # Returns the utility of an end game (who is winning at that point)
+  def __utility(self, game, action):
+    value = 0
+
+    for district in game.districts:
+      value += self._winner_weight(game, district)
+
+    return Move(action, value)
+
 class Max(Player):
   def get_move(self):
     move = self.minimax(self.game, 3, True)
     return move.action
+
+  def _winner_weight(self, game, district):
+    if game.district_winner(district) == self.max_player_party:
+        return 1
+    elif game.district_winner(district) == self.min_player_party:
+        return -1
+    else:
+        return 0  # Tie
 
 
 class Min(Player):
   def get_move(self):
     move = self.minimax(self.game, 3, False)
     return move.action
+
+  def _winner_weight(self, game, district):
+    if game.district_winner(district) == self.max_player_party:
+        return 1
+    elif game.district_winner(district) == self.min_player_party:
+        return -1
+    else:
+        return 0  # Tie
+
 
 class Move(object):
   def __init__(self, action, value):
