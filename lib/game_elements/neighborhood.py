@@ -1,11 +1,11 @@
 import utility
 
 class Neighborhood(object):
-    # initialize with { party, location, owned}
     def __init__(self, initial_data):
         for key in initial_data:
             setattr(self, key, initial_data[key])
-        self.initialize_graph()
+
+        self.graph = self.initialize_graph()
 
     # Returns the matrix itself
     def as_matrix(self):
@@ -14,10 +14,6 @@ class Neighborhood(object):
     # Returns block at a given location
     def block_at_location(self, i, j):
         return self.matrix[i][j]
-
-    def vertex_at_location(self, i,j):
-        return self.vertex_matrix[i][j]
-
 
     # Returns an array of parties from the matrix
     def inspect(self):
@@ -54,5 +50,3 @@ class Neighborhood(object):
 
         self.graph = graph
         return self.graph
-
-

@@ -6,16 +6,17 @@ except:
 class Game(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
-        self.board = neighborhood.initialize_graph()
-        self.district_size = len(neighborhood.matrix)
+        self.board = self.neighborhood.graph
+        self.district_size = len(self.neighborhood.matrix)
         self.districts = []
 
     def is_legal_move(self, district):
+        valid_size = self.__is_district_valid_size(district)
         available = self.__is_district_available(district)
         contiguous = self.__is_district_contiguous(district)
-        valid_size = self.__is_district_valid_size(district)
         valid_placement = self.__is_district_valid_placement(district)
-        return available and contiguous and valid_size and valid_placement
+
+        return valid_size and available and contiguous and valid_placement
 
     def add_district(self, district):
         if self.is_legal_move(district):
@@ -31,6 +32,36 @@ class Game(object):
 
     def evaluate_game_state(self):
         return self.__is_finished()
+
+    def inspect(self):
+        arr = []
+
+        for district in self.districts:
+            arr.append(district.inspect())
+
+        return arr
+
+    def inspect_blocks(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            arr.append((vert.get_block().location, vert.get_block().owned))
+        return arr
+
+    def inspect_available_moves(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            block = vert.get_block()
+            if not block.owned:
+                arr.append(vert.get_block().location)
+        return arr
+
+    def inspect_taken_moves(self):
+        arr = []
+        for vert in self.board.get_vertices():
+            block = vert.get_block()
+            if block.owned:
+                arr.append(vert.get_block().location)
+        return arr
 
     def district_winner(self, district):
         parties = [block.party for block in district.blocks]
@@ -73,13 +104,13 @@ class Game(object):
             # Check for area that we cannot split into districts
             if len(visited) % self.district_size != 0:
                 return False
+
         return True
 
     def __is_district_available(self, district):
         for block in district.blocks:
             vertex = self.board.get_vertex(block)
             game_block = vertex.get_block()
-
             if game_block.owned:
                 return False
 
