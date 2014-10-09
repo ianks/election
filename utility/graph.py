@@ -38,17 +38,18 @@ class Graph:
         self.vertList[key] = newVertex
         return newVertex
 
-    def get_vertex(self,n):
-        if n in self.vertList:
-            return self.vertList[n]
-        else:
-            return None
+    # def get_vertex(self,n):
+    #     if n in self.vertList:
+    #         return self.vertList[n]
+    #     else:
+    #         return None
 
-    def get_vertex_at_location(self,i,j):
-        if (i,j) in self.vertList:
-            return self.vertList[(i,j)]
-        else:
-            return None
+    def get_vertex(self, block):
+        for blk, vert in self.vertList.iteritems():
+            if block.location == blk.location:
+                return vert
+
+        return None
 
     def __contains__(self,n):
         return n in self.vertList
@@ -64,6 +65,9 @@ class Graph:
 
     def get_vertices(self):
         return self.vertList.values()
+
+    def get_blocks(self):
+        return self.vertList.keys()
 
     def __iter__(self):
         return iter(self.vertList.values())

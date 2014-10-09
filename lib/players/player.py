@@ -5,6 +5,7 @@ except:
 
 import copy
 import random
+import pickle
 
 from .. import game_elements
 
@@ -15,23 +16,23 @@ class Player(object):
     self.game = game
 
   # Find the optimal min/max move
-  def minimax(self, game_orig, depth, is_max, take_action = None):
+  def minimax(self, game, depth, is_max, take_action = None):
 
     emptyDistrict = game_elements.District([])
     # Will take action after the first call of minimax
     if take_action:
-      #print 'District: ', take_action.inspect()
-      #print '*******'
-      #print "before take action:", game_orig.inspect()
-      #print '*******'
-      game_orig.add_district(take_action)
-      #print "after take action:", game_orig.inspect()
+      print 'District: ', take_action.inspect()
+      print '*******'
+      print "before take action:", game.inspect()
+      print '*******'
+      game.add_district(take_action)
+      print "after take action:", game.inspect()
       #print '*******'
     else:
        take_action = emptyDistrict
 
     # make a copy so we dont screw up the current game state
-    game = copy.deepcopy(game_orig)
+
     # embed()
 
     # Max Depth of tree reached
@@ -45,9 +46,6 @@ class Player(object):
         value = self.minimax(game, depth-1, False, action)
         best_value = max([value, best_value], key = lambda move: move.value)
 
-      #convert new instance of action to old
-      best_value.action = self.__convert_action_to_original_game(game_orig,best_value.action)
-
       return best_value
 
     # Player is Min:
@@ -58,8 +56,6 @@ class Player(object):
       for action in actions:
         value = self.minimax(game, depth-1, True, action)
         best_value = min([value, best_value], key = lambda move: move.value)
-      #convert new instance of action to old
-      best_value.action = self.__convert_action_to_original_game(game_orig,best_value.action)
 
       return best_value
 
@@ -126,7 +122,7 @@ class Player(object):
   def __is_terminal(self, game):
     return game.evaluate_game_state()
 
-  def __convert_action_to_original_game(self, original_game,action):
+  def convert_action_to_original_game(self, original_game, action):
     original_vertices = original_game.board.get_vertices()
     original_blocks_list = []
     for vertex in original_vertices:
@@ -142,22 +138,22 @@ class Player(object):
 
 class Max(Player):
   def get_move(self):
-    move = self.minimax(self.game, 3, True)
+    game = copy.deepcopy(self.game)
+    move = self.minimax(game, 3, True)
+    converted_move = self.convert_action_to_original_game(game, move.action)
     # return a district (action)
-    return move.action
+    return converted_move
 
 
 class Min(Player):
   def get_move(self):
-    move = self.minimax(self.game, 3, False)
+    game = copy.deepcopy(self.game)
+    move = self.minimax(game, 3, False)
+    converted_move = self.convert_action_to_original_game(game, move.action)
     # return a district (action)
-    return move.action
+    return converted_move
 
 class Move(object):
   def __init__(self, action, value):
     self.action = action
     self.value = value
-
-
-
-

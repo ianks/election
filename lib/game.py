@@ -6,8 +6,8 @@ except:
 class Game(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood
-        self.board = neighborhood.initialize_graph()
-        self.district_size = len(neighborhood.matrix)
+        self.board = self.neighborhood.graph
+        self.district_size = len(self.neighborhood.matrix)
         self.districts = []
 
     def is_legal_move(self, district):
@@ -15,6 +15,7 @@ class Game(object):
         available = self.__is_district_available(district)
         contiguous = self.__is_district_contiguous(district)
         valid_placement = self.__is_district_valid_placement(district)
+
         return valid_size and available and contiguous and valid_placement
 
     def add_district(self, district):
@@ -34,6 +35,7 @@ class Game(object):
 
     def inspect(self):
         arr = []
+
         for district in self.districts:
             arr.append(district.inspect())
 
@@ -80,12 +82,17 @@ class Game(object):
             # Check for area that we cannot split into districts
             if len(visited) % self.district_size != 0:
                 return False
+
         return True
 
     def __is_district_available(self, district):
         for block in district.blocks:
             vertex = self.board.get_vertex(block)
-            game_block = vertex.get_block()
+
+            try:
+                game_block = vertex.get_block()
+            except:
+                embed()
 
             if game_block.owned:
                 return False
