@@ -10,6 +10,7 @@ class District(object):
       return locations
 
     def append(self, block):
+      self.locations.append(block.location)
       return self.blocks.append(block)
 
     def inspect(self):

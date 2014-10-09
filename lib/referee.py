@@ -30,7 +30,8 @@ class Referee(object):
 
         # Submit the move if valid
         if not self.__add_move_to_game_board(district):
-            self.players_next_move()
+            print "Can't add district, Fail."
+            exit()
 
         # Change the player
         self.__change_player()

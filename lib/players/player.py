@@ -4,6 +4,7 @@ except:
     pass
 
 import copy
+import random
 
 from .. import game_elements
 
@@ -19,12 +20,19 @@ class Player(object):
     emptyDistrict = game_elements.District([])
     # Will take action after the first call of minimax
     if take_action:
+      #print 'District: ', take_action.inspect()
+      #print '*******'
+      #print "before take action:", game_orig.inspect()
+      #print '*******'
       game_orig.add_district(take_action)
+      #print "after take action:", game_orig.inspect()
+      #print '*******'
     else:
        take_action = emptyDistrict
 
     # make a copy so we dont screw up the current game state
     game = copy.deepcopy(game_orig)
+    # embed()
 
     # Max Depth of tree reached
     if depth == 0 or self.__is_terminal(game):
@@ -45,7 +53,9 @@ class Player(object):
     # Player is Min:
     else:
       best_value = Move(emptyDistrict, float("inf"))
-      for action in self.__actions(game):
+      actions = self.__actions(game)
+
+      for action in actions:
         value = self.minimax(game, depth-1, True, action)
         best_value = min([value, best_value], key = lambda move: move.value)
       #convert new instance of action to old
@@ -55,15 +65,43 @@ class Player(object):
 
   # Returns a list of actions or moves given the game game
   def __actions(self,game):
-    neighborhood = game.neighborhood
 
     actions_list = []
-    for district in neighborhood.as_matrix():
-      action = game_elements.District([])
-      for block in district:
-        action.append(block)
-      if game.is_legal_move(action):
-        actions_list.append(action)
+    # select a random node in the game
+    count = 0
+    while len(actions_list) < 5:
+      if (len(actions_list) != 0 and count >= 100):
+       break
+
+      count += 1
+      vertex = random.sample(game.board.get_vertices(), 1)[0]
+
+      if vertex.get_block().owned:
+        continue
+
+      stack = []
+      visited = []
+      stack.append(vertex)
+      district = game_elements.District([])
+
+      while len(stack) != 0:
+        current_vertex = stack.pop()
+
+        if current_vertex not in visited:
+            visited.append(current_vertex)
+            district.append(current_vertex.get_block())
+
+            if len(district.blocks) == game.district_size:
+              break
+
+            for connection in current_vertex.get_connections():
+              if (not connection.get_block().owned) and (connection not in visited):
+                  stack.append(connection)
+
+
+      if game.is_legal_move(district):
+        #print "True, ", district.inspect(), " is a valid move"
+        actions_list.append(district)
 
     return actions_list
 

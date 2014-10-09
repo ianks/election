@@ -11,11 +11,11 @@ class Game(object):
         self.districts = []
 
     def is_legal_move(self, district):
+        valid_size = self.__is_district_valid_size(district)
         available = self.__is_district_available(district)
         contiguous = self.__is_district_contiguous(district)
-        valid_size = self.__is_district_valid_size(district)
         valid_placement = self.__is_district_valid_placement(district)
-        return available and contiguous and valid_size and valid_placement
+        return valid_size and available and contiguous and valid_placement
 
     def add_district(self, district):
         if self.is_legal_move(district):
@@ -31,6 +31,13 @@ class Game(object):
 
     def evaluate_game_state(self):
         return self.__is_finished()
+
+    def inspect(self):
+        arr = []
+        for district in self.districts:
+            arr.append(district.inspect())
+
+        return arr
 
     def district_winner(self, district):
         parties = [block.party for block in district.blocks]
