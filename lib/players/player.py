@@ -5,7 +5,9 @@ except:
 
 import copy
 import random
-import pickle
+import logging
+
+logging.basicConfig(filename='log/development.log', filemode='w', level=logging.DEBUG)
 
 from .. import game_elements
 
@@ -18,20 +20,22 @@ class Player(object):
   # Find the optimal min/max move
   def minimax(self, game_orig, depth, is_max, take_action = None):
 
-    emptyDistrict = game_elements.District([])
+    empty_district = game_elements.District([])
+
     # Will take action after the first call of minimax
     if take_action:
-      print 'District: ', take_action.inspect()
-      print '*******'
-      print "before take action:", game_orig.inspect()
-      print '*******'
-      game_orig.add_district(take_action)
-      print "after take action:", game_orig.inspect()
-      #print '*******'
-    else:
-       take_action = emptyDistrict
+      logging.info('District: '+ str(take_action.inspect()))
+      logging.info('*******')
+      logging.info("before take action:" + str(game_orig.inspect()))
+      logging.info('*******')
 
-    # make a copy so we dont screw up the current game state
+      game_orig.add_district(take_action)
+
+      logging.info("after take action:" + str(game_orig.inspect()))
+    else:
+       take_action = empty_district
+
+    # Make a copy so we dont screw up the current game state
     game = copy.deepcopy(game_orig)
 
     # Max Depth of tree reached
@@ -40,21 +44,23 @@ class Player(object):
 
     # Player is Max:
     if is_max:
-      best_value = Move(emptyDistrict, float("-inf"))
+      best_value = Move(empty_district, float("-inf"))
       for action in self.__actions(game):
         value = self.minimax(game, depth-1, False, action)
         best_value = max([value, best_value], key = lambda move: move.value)
+
       best_value.action = self.convert_action_to_original_game(game_orig, best_value.action)
       return best_value
 
     # Player is Min:
     else:
-      best_value = Move(emptyDistrict, float("inf"))
+      best_value = Move(empty_district, float("inf"))
       actions = self.__actions(game)
 
       for action in actions:
         value = self.minimax(game, depth-1, True, action)
         best_value = min([value, best_value], key = lambda move: move.value)
+
       best_value.action = self.convert_action_to_original_game(game_orig, best_value.action)
       return best_value
 
@@ -100,7 +106,6 @@ class Player(object):
 
 
       if game.is_legal_move(district):
-        #print "True, ", district.inspect(), " is a valid move"
         actions_list.append(district)
 
     return actions_list
@@ -143,14 +148,12 @@ class Player(object):
 class Max(Player):
   def get_move(self):
     move = self.minimax(self.game, 3, True)
-    # return a district (action)
     return move.action
 
 
 class Min(Player):
   def get_move(self):
     move = self.minimax(self.game, 3, False)
-    # return a district (action)
     return move.action
 
 class Move(object):
