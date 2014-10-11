@@ -139,16 +139,11 @@ class Player(object):
 
     return Move(action, value)
 
-class Max(Player):
-  def get_move(self):
-    move = self.minimax(self.game, 3, True)
-    return move.action
-
   def _winner_value(self, game, district):
     if game.district_winner(district) == self.max_player_party:
-        return 1
+        return 8
     elif game.district_winner(district) == self.min_player_party:
-        return -1
+        return -8
     else:
         return 0  # Tie
 
@@ -156,35 +151,24 @@ class Max(Player):
     parties = [block.party for block in district.blocks]
 
     # If we win, favor the move that gives us more of their blocks
-    if parties.count(self.max_player_party) > 2:
-      return parties.count(self.min_player_party)
-
+    if parties.count(self.max_player_party) == 3:
+      return 10
+    elif parties.count(self.min_player_party) == 3:
+      return -10
     else:
       return 0
+
+
+class Max(Player):
+  def get_move(self):
+    move = self.minimax(self.game, 3, True)
+    return move.action
 
 
 class Min(Player):
   def get_move(self):
     move = self.minimax(self.game, 3, False)
     return move.action
-
-  def _winner_value(self, game, district):
-    if game.district_winner(district) == self.max_player_party:
-        return 1
-    elif game.district_winner(district) == self.min_player_party:
-        return -1
-    else:
-        return 0  # Tie
-
-  def _party_ratio_value(self, game, district):
-    parties = [block.party for block in district.blocks]
-
-    # If we win, favor the move that gives us more of their blocks
-    if parties.count(self.min_player_party) > 2:
-      return parties.count(self.max_player_party)
-
-    else:
-      return 0
 
 
 class Move(object):
