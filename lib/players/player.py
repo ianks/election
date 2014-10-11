@@ -6,6 +6,7 @@ except:
 import copy
 import random
 import logging
+import subprocess
 
 logging.basicConfig(filename='log/development.log', filemode='w', level=logging.DEBUG)
 
@@ -75,6 +76,10 @@ class Player(object):
     while len(actions_list) < 5:
       if (len(actions_list) != 0 and count >= 100):
         break
+
+      if count > 10000:
+        subprocess.call(["python", "gerrymander.py", "largeNeighborhood.txt"])
+        exit()
 
       count += 1
       vertex = random.choice(game.board.get_vertices())
