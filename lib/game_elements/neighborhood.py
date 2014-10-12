@@ -30,7 +30,6 @@ class Neighborhood(object):
 
         return matrix
 
-
     def initialize_graph(self):
         graph = utility.Graph()
 

@@ -1,8 +1,3 @@
-try:
-    from IPython import embed
-except:
-    pass
-
 class Game(object):
     def __init__(self, neighborhood):
         self.neighborhood = neighborhood

@@ -14,6 +14,15 @@ try:
 except:
     pass
 
+# Names: Ian Ker-Seymer and Brandon Mikulka
+# Purpose: Create min-max gerrymander game
+# Run program using "python gerrymander.py <GameBoard>" where Gameboard
+#    is either smallNeighborhood.txt or largeNeighborhood.txt
+# Implementation of Minimax function in lib/players/player.py
+# Data structures (matrix/graph) stored in lib/game_elements/neighborhood.py
+# Games state stored in lib/game.py
+# Game controlled by referee.py
+# Modified third party resources are located in utility/ (graph implimentation)
 
 def initialize_neighborhood(file):
     matrix = []
