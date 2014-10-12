@@ -24,6 +24,11 @@ except:
 # Game controlled by referee.py
 # Modified third party resources are located in utility/ (graph implimentation)
 
+# EXTRA CREDIT OPPURTUNITIES:
+# - Our board accepts all types of moves, not simply the
+#   standard rows, columns, and sqaures
+# - Also works on any sized square board, not just 4x4
+
 def initialize_neighborhood(file):
     matrix = []
     file = open(file).read()
