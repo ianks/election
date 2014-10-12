@@ -1,11 +1,6 @@
-try:
-    from IPython import embed
-except:
-    pass
-
 from game import Game
 import players
-
+import sys
 
 class Referee(object):
     def __init__(self, neighborhood, game, players):
@@ -16,9 +11,12 @@ class Referee(object):
 
     def start_game(self):
         while not self.__is_game_finished():
+            sys.stdout.write(".")
+            sys.stdout.flush()
             self.players_next_move()
 
         #print Information
+        print ""
         self.__print_players()
         self.__print_district_assigments()
         self.__print_district_winners()
