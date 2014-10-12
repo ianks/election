@@ -1,12 +1,6 @@
-try:
-    from IPython import embed
-except:
-    pass
-
 from game import Game
 import players
 import sys
-
 
 class Referee(object):
     def __init__(self, neighborhood, game, players):

@@ -1,8 +1,3 @@
-try:
-    from IPython import embed
-except:
-    pass
-
 import copy
 import random
 import logging
@@ -73,7 +68,7 @@ class Player(object):
     actions_list = []
     # select a random node in the game
     count = 0
-    while len(actions_list) < 5:
+    while len(actions_list) < 10:
       if (len(actions_list) != 0 and count >= 100):
         break
 
@@ -146,9 +141,9 @@ class Player(object):
 
   def _winner_value(self, game, district):
     if game.district_winner(district) == self.max_player_party:
-        return 8
+        return game.district_size / 2
     elif game.district_winner(district) == self.min_player_party:
-        return -8
+        return -1 * game.district_size / 2
     else:
         return 0  # Tie
 
@@ -156,10 +151,12 @@ class Player(object):
     parties = [block.party for block in district.blocks]
 
     # If we win, favor the move that gives us more of their blocks
-    if parties.count(self.max_player_party) == 3:
-      return 10
-    elif parties.count(self.min_player_party) == 3:
-      return -10
+    if parties.count(self.max_player_party) > game.district_size / 2:
+      return parties.count(self.min_player_party)
+
+    elif parties.count(self.min_player_party) > game.district_size / 2:
+      return -1 * parties.count(self.max_player_party)
+
     else:
       return 0
 
@@ -172,7 +169,8 @@ class Max(Player):
 
 class Min(Player):
   def get_move(self):
-    move = self.minimax(self.game, 3, False)
+    # Give max advantage by making depth shorter for min
+    move = self.minimax(self.game, 1, False)
     return move.action
 
 
